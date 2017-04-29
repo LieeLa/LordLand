@@ -1,0 +1,59 @@
+  @Override
+    public void run() {
+        while (i > -1 && isRun) {
+            main.time[1].setText("倒计时:" + i--);
+            second(1);      // 等一秒
+        }
+        if (i == -1)// 正常终结，说明超时
+        {
+            main.time[1].setText("不抢");
+        }
+        main.landlord[0].setVisible(false);
+        main.landlord[1].setVisible(false);
+        for (Card card2 : main.playerList[1]) {
+            card2.canClick = true;// 可被点击
+        }		// 如果自己抢到地主
+        if (main.time[1].getText().equals("抢地主")) {
+            // 得到地主牌
+            main.playerList[1].addAll(main.lordList);
+            openlord(true);
+            second(2);// 等待五秒
+            operation.order(main.playerList[1]);
+            operation.rePosition(main, main.playerList[1], 1);
+            setlord(1);
+        } else // 电脑选地主,选择电脑2
+        {
+            if (operation.getScore(main.playerList[0]) < operation
+                    .getScore(main.playerList[2])) {
+                main.time[2].setText("抢地主");
+                main.time[2].setVisible(true);
+                setlord(2);// 设定地主，
+                openlord(true);
+                second(3);
+                main.playerList[2].addAll(main.lordList);
+                operation.order(main.playerList[2]);
+                operation.rePosition(main, main.playerList[2], 2);
+                openlord(false);
+
+            } else {
+                // 电脑选地主,选择电脑0
+                main.time[0].setText("抢地主");
+                main.time[0].setVisible(true);
+                setlord(0);// 设定地主
+                openlord(true);
+                second(3);
+                main.playerList[0].addAll(main.lordList);
+                operation.order(main.playerList[0]);
+                operation.rePosition(main, main.playerList[0], 0);
+                openlord(false);
+            }
+        }
+        // 选完地主后 关闭地主按钮
+        main.landlord[0].setVisible(false);   //抢地主按钮
+        main.landlord[1].setVisible(false);    //不抢按钮
+        turnOn(false);
+        for (int i = 0; i < 3; i++) {
+            main.time[i].setText("不要");
+            main.time[i].setVisible(false);
+
+        }
